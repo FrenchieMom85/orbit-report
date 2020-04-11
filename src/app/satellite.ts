@@ -13,7 +13,8 @@ export class Satellite {
     }
 
     shouldShowWarning(): boolean {
-        if (this.type === 'Space Debris'.toLowerCase()) {
+        // let spaceDebris: string = 'Space Debris'
+        if (this.type.toLowerCase() === 'Space Debris'.toLowerCase()) {
             return true
         } else {
             return false
