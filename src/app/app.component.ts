@@ -10,39 +10,82 @@ export class AppComponent {
   title = 'orbit-report';
   sourceList: Satellite[];
   displayList: Satellite[];
+  satelliteType 
 
   constructor() {
     this.sourceList = [];
-    let satellitesUrl = 'https://handlers.education.launchcode.org/static/satellites.json';
+    const satellitesUrl = 'https://handlers.education.launchcode.org/static/satellites.json';
     this.displayList = []
+    this.satelliteType = [
+      { typeName: 'Total', count: 0 },
+      { typeName: 'Space Debris', count: 0 },
+      { typeName: 'Communication', count: 0 },
+      { typeName: 'Probe', count: 0 },
+      { typeName: 'Positioning', count: 0 },
+      { typeName: 'Space Station', count: 0 },
+      { typeName: 'Telescope', count: 0 },
+    ]
 
     window.fetch(satellitesUrl).then(function (response) {
       response.json().then(function (data) {
 
-        let fetchedSatellites = data.satellites;
+        const fetchedSatellites = data.satellites;
         for (let i = 0; i < fetchedSatellites.length; i++) {
-          let satellite = new Satellite(fetchedSatellites[i].name, fetchedSatellites[i].type, fetchedSatellites[i].launchDate, fetchedSatellites[i].orbitType, fetchedSatellites[i].operational);
-          this.sourceList.push(satellite);
+          const satelliteList = new Satellite(fetchedSatellites[i].name, fetchedSatellites[i].type, fetchedSatellites[i].launchDate, fetchedSatellites[i].orbitType, fetchedSatellites[i].operational);
+          this.sourceList.push(satelliteList);
           this.displayList = this.sourceList.slice(0);
+
+          for (const typeInfo of this.satelliteType) {
+            if (typeInfo.typeName === satelliteList.type) {
+              typeInfo.count++
+              this.satelliteType[0].count++
+            }
+          }
         }
-        }.bind(this));
+
+      }.bind(this));
     }.bind(this));
 
 
   }
 
-search(searchTerm: string): void {
-  let matchingSatellites: Satellite[] = [];
-  searchTerm = searchTerm.toLowerCase();
-  for(let i = 0; i <this.sourceList.length; i++) {
-  let name = this.sourceList[i].name.toLowerCase();
-  if (name.indexOf(searchTerm) >= 0) {
-    matchingSatellites.push(this.sourceList[i]);
-  }
-}
-// assign this.displayList to be the the array of matching satellites
-// this will cause Angular to re-make the table, but now only containing matches
-this.displayList = matchingSatellites;
-  }
+  search(searchTerm: string): void {
+    const matchingSatellites: Satellite[] = [];
+    const searchType = searchTerm.toLowerCase();
+    for (const satellite of this.sourceList) {
+      const name = satellite.name.toLowerCase()
+      if (name.indexOf(searchType) >= 0) {
+        matchingSatellites.push(satellite)
+      }
+      const type = satellite.type.toLowerCase()
+      if (type.indexOf(searchType) >= 0 && !matchingSatellites.includes(satellite)) {
+        matchingSatellites.push(satellite)
+      }
+      const orbitType = satellite.orbitType.toLowerCase()
+      if (orbitType.indexOf(searchType) >= 0 && !matchingSatellites.includes(satellite)) {
+        matchingSatellites.push(satellite)
+      }
+      
+    }
+    this.displayList = matchingSatellites;
 
+    this.satelliteType = [
+      { typeName: 'Total', count: 0 },
+      { typeName: 'Space Debris', count: 0 },
+      { typeName: 'Communication', count: 0 },
+      { typeName: 'Probe', count: 0 },
+      { typeName: 'Positioning', count: 0 },
+      { typeName: 'Space Station', count: 0 },
+      { typeName: 'Telescope', count: 0 },
+    ]
+
+    for (const satellite of this.displayList) {
+      for (const typeInfo of this.satelliteType) {
+        if (typeInfo.typeName === satellite.type) {
+          typeInfo.count++
+          this.satelliteType[0].count++
+        }
+      }
+    }
+  }
 }
