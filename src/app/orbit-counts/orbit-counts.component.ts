@@ -11,7 +11,6 @@ export class OrbitCountsComponent implements OnInit {
   @Input() satellites: Satellite[];
   @Input() satelliteType;
 
-
   constructor() { }
 
   ngOnInit() {

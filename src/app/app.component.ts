@@ -35,9 +35,9 @@ export class AppComponent {
           this.sourceList.push(satelliteList);
           this.displayList = this.sourceList.slice(0);
 
-          for (const typeInfo of this.satelliteType) {
-            if (typeInfo.typeName === satelliteList.type) {
-              typeInfo.count++
+          for (const info of this.satelliteType) {
+            if (info.typeName === satelliteList.type) {
+              info.count++
               this.satelliteType[0].count++
             }
           }
@@ -80,9 +80,9 @@ export class AppComponent {
     ]
 
     for (const satellite of this.displayList) {
-      for (const typeInfo of this.satelliteType) {
-        if (typeInfo.typeName === satellite.type) {
-          typeInfo.count++
+      for (const info of this.satelliteType) {
+        if (info.typeName === satellite.type) {
+          info.count++
           this.satelliteType[0].count++
         }
       }
